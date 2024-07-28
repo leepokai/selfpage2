@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李博凱的個人網站</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeIn 0.5s ease forwards, scaleUp 0.5s ease forwards;
+        }
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        .welcome {
+            grid-column: span 2;
+            background-color: #333;
+            color: white;
+        }
+        .search {
+            grid-column: span 3;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            background-color: #f0f0f0;
+            font-size: 16px;
+        }
+        h2, h3 {
+            margin-top: 0;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        @keyframes scaleUp {
+            to { transform: scale(1); }
+        }
+        .item:nth-child(1) { animation-delay: 0.1s; }
+        .item:nth-child(2) { animation-delay: 0.2s; }
+        .item:nth-child(3) { animation-delay: 0.3s; }
+        .item:nth-child(4) { animation-delay: 0.4s; }
+        .item:nth-child(5) { animation-delay: 0.5s; }
+        .item:nth-child(6) { animation-delay: 0.6s; }
+        .blog-preview {
+            text-align: left;
+        }
+        .blog-preview h3 {
+            margin-bottom: 10px;
+        }
+        .blog-preview p {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="item welcome">
+            <h2>欢迎来到李博凱的个人博客</h2>
+        </div>
+        <div class="item">
+            <div class="icon">📝</div>
+            <h3>最新文章</h3>
+        </div>
+        <div class="item search">
+            <div class="icon">🔍</div>
+            <input type="text" placeholder="搜索博客...">
+        </div>
+        <div class="item blog-preview">
+            <h3>我的第一篇博客</h3>
+            <p>这是我的第一篇博客文章的简介。在这里，我会分享我的想法和经验。</p>
+        </div>
+        <div class="item blog-preview">
+            <h3>学习 Markdown 的乐趣</h3>
+            <p>Markdown 让写作变得如此简单和有趣。来看看我是如何使用它的吧！</p>
+        </div>
+        <div class="item">
+            <div class="icon">👤</div>
+            <h3>关于我</h3>
+            <p>了解更多</p>
+        </div>
+    </div>
+</body>
+</html>
