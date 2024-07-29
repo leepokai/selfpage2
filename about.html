@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於李博凱 - 個人網站</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            color: #000;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .profile-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .profile-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .profile-section h2 {
+            color: #000;
+            margin-top: 0;
+        }
+        .profile-image-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .social-icons {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .profile-image-container:hover .social-icons {
+            opacity: 1;
+        }
+        .social-icons a {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .social-icons a:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .skill-tag {
+            background-color: #000;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .contact-info {
+            margin-top: 20px;
+        }
+        .contact-info p {
+            margin: 5px 0;
+        }
+        .contact-info a {
+            color: #000;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #000;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-section">
+            <div class="profile-image-container">
+                <img src="headphoto.jpeg" alt="李博凱的照片" class="profile-image">
+                <div class="social-icons">
+                    <a href="https://github.com/leepokai" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.instagram.com/leepokai20" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="kevin2005ha@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="https://www.threads.net/@leepokai20" target="_blank"><i class="fas fa-at"></i></a>
+                </div>
+            </div>
+            <h2>個人簡介</h2>
+            <p>你好，我是李博凱，一位熱衷於程式與AI學習與多個領域的學習的準大學生，渴望透過跨領域能力研發並創新。</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>專業技能</h2>
+            <div class="skills">
+                <span class="skill-tag">C++</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">演算法和資料結構</span>
+                <span class="skill-tag">基礎機器學習</span>
+                <span class="skill-tag">基礎語音辨識</span>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>相關經歷</h2>
+            <p><strong>APCS(4/5)</strong></p>
+            <p>在大學程式設計先修檢(APCS)測獲得觀念4級分實作五級分</p>
+            
+            <p><strong>專題製作</strong></p>
+            <p>製作專題「利用咳嗽聲音自動辨識肺部疾病之軟體開發」</p>
+
+            <p><strong>麗山高中市長獎畢業</strong></p>
+            <p>在校學謝長期保持全班第一名</p>
+
+            <p><strong>創立麗山星爆魔法研究社</strong></p>
+            <p>擔任社長並管理社團</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>就讀</h2>
+            <p><strong>國立陽明交通大學</strong> - 學士學位 </p>
+            <p>主修：資訊工程</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>聯絡資訊</h2>
+            <div class="contact-info">
+                <p>Email: <a href="kevin2005ha@gmail.com">kevin2005ha@gmail.com</a></p>
+                <p>Threads: <a href="https://www.threads.net/@leepokai20" target="_blank">@leepokai20</a></p>
+                <p>Instagram: <a href="https://www.instagram.com/leepokai20" target="_blank">@leepokai20</a></p>
+                <p>GitHub: <a href="https://github.com/leepokai" target="_blank">github.com/leepokai</a></p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">返回首頁</a>
+    </div>
+
+    <script>
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        function handleScroll() {
+            const sections = document.querySelectorAll('.profile-section');
+            sections.forEach(section => {
+                if (isElementInViewport(section)) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', handleScroll);
+    </script>
+</body>
+</html>
