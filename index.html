@@ -6,7 +6,7 @@
     <title>李博凱的個人網站</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
-
+        
         body {
             font-family: 'Noto Sans TC', sans-serif;
             margin: 0;
@@ -20,12 +20,10 @@
         }
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             grid-gap: 20px;
-            max-width: 1200px;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
+            max-width: 800px;
+            margin: 50px auto;
         }
         .item {
             background-color: white;
@@ -47,12 +45,12 @@
             margin-bottom: 15px;
         }
         .welcome {
-            grid-column: 1 / -1; /* Welcome section spans across all columns */
+            grid-column: span 2;
             background-color: #333;
             color: white;
         }
         .search {
-            grid-column: 1 / -1; /* Search section spans across all columns */
+            grid-column: span 3;
         }
         input[type="text"] {
             width: 100%;
@@ -99,7 +97,7 @@
         <div class="item welcome">
             <h2>歡迎來到李博凱的個人網站</h2>
         </div>
-        
+
         <!-- 最新文章部分 -->
         <div class="item">
             <a href="articles.html">
@@ -113,6 +111,7 @@
             <div class="icon">🔍</div>
             <input type="text" placeholder="搜索博客...">
         </div>
+
         
         <!-- 关于我部分 -->
         <div class="item">
@@ -122,26 +121,28 @@
                 <p>了解更多</p>
             </a>
         </div>
-        
-        <!-- 动态插入文章预览内容 -->
-        <div id="blog-previews">
-            <!-- 这里将插入动态生成的文章预览 -->
+
+        <!-- Article 1 preview -->
+        <div id="article1-preview" class="item blog-preview">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+
+        <!-- Article 2 preview -->
+        <div id="article2-preview" class="item blog-preview">
+            <!-- Content will be dynamically inserted here -->
         </div>
     </div>
     
     <script>
         // 定义要加载的文章
         const articles = [
-            'article1.html',
-            'article2.html'
+            { file: 'article1.html', element: 'article1-preview' },
+            { file: 'article2.html', element: 'article2-preview' }
         ];
-
-        // 获取 blog-previews 元素
-        const blogPreviews = document.getElementById('blog-previews');
 
         // 动态插入文章预览内容
         articles.forEach(article => {
-            fetch(article)
+            fetch(article.file)
                 .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();
@@ -149,15 +150,13 @@
                     const title = doc.querySelector('h1').innerText;
                     const description = doc.querySelector('p').innerText;
 
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'item blog-preview';
+                    const previewItem = document.getElementById(article.element);
                     previewItem.innerHTML = `
-                        <a href="${article}">
+                        <a href="${article.file}">
                             <h3>${title}</h3>
                             <p>${description.substring(0, 100)}...</p>
                         </a>
                     `;
-                    blogPreviews.appendChild(previewItem);
                 });
         });
     </script>
