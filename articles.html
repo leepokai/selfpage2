@@ -43,15 +43,42 @@
 <body>
     <div class="container">
         <h1>文章列表</h1>
-        <div class="article-item">
-            <a href="article1.html">
-                <h2>網站架設學習</h2>
-                <p>在這個快節奏的時代，能夠在三天內從一個對網站架設一無所知的新手，轉變為能夠構建出一個具備功能的網站，這段經歷可謂是既挑戰又充滿收穫。今天，我想和大家分享我在清華大學WebCamp網路架設網站營隊中...</p>
-            </a>
+        <div id="article1-preview" class="article-item">
+            <!-- Content will be dynamically inserted here -->
         </div>
-
+        <div id="article3-preview" class="article-item">
+            <!-- Content will be dynamically inserted here -->
+        </div>
         <!-- 更多文章项目 -->
         <a href="index.html">返回首页</a>
     </div>
+    <script >
+        
+        // 定义要加载的文章
+        const articles = [
+            { file: 'article1.html', element: 'article1-preview' },
+            { file: 'article3/article3.html', element: 'article3-preview' }
+        ];
+
+        // 动态插入文章预览内容
+        articles.forEach(article => {
+            fetch(article.file)
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const title = doc.querySelector('h1').innerText;
+                    const description = doc.querySelector('p').innerText;
+
+                    const previewItem = document.getElementById(article.element);
+                    previewItem.innerHTML = `
+                        <a href="${article.file}">
+                            <h3>${title}</h3>
+                            <p>${description.substring(0, 100)}...</p>
+                        </a>
+                    `;
+                });
+        });
+    </script>
 </body>
 </html>

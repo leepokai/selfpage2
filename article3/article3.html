@@ -1,0 +1,703 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Speech Separation</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	font-family: 'Noto Sans TC', sans-serif;
+	margin: 0;
+	padding: 20px;
+	background-color: #f5f5f5;
+	color: #333;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+.container {
+	max-width: 800px;
+	margin: 50px auto;
+	background-color: white;
+	border-radius: 12px;
+	padding: 30px;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="c0c67c78-1b95-4a66-834d-e0a869f9620d" class="page sans container"><header><h1 class="page-title"><strong>Speech Separation</strong></h1></header><div class="page-body"><h1 id="65b36de7-160f-4a95-903a-b795df39dcf6" class="">Speech enhancement</h1><p id="611b17a2-4c13-44cf-a3b8-9242e35df384" class="">去除雜音⇒指提取人聲</p><h1 id="820500bf-f7be-4c09-afa1-ce5ddac80af8" class="">Speaker Separation</h1><p id="3f35a54b-2db6-4794-a2ed-3821b4703799" class="">多個人在講話，把不同人的聲音分出來</p><p id="5fd4da87-c54a-49e6-b077-315532b9731b" class="">
+</p><h2 id="dd2a4a5c-7cc8-42a8-8c78-bc6adac8e7ff" class="">圖解</h2><figure id="f3fce47b-8d42-455d-bf8a-c286c4868b06" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled.png"><img style="width:662px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled.png"/></a></figure><p id="40f35092-32b0-49d2-9ece-6255fd3e05a2" class="">由於輸出長度=輸入長度所以不一定要Seq2Seq</p><p id="2f7806ac-f9cc-40d8-a423-c335d74b7f51" class="">
+</p><h2 id="7ccee802-9232-4c8f-940d-75e95495956f" class="">製造Training data⇒不一定要混雜音</h2><figure id="cdd485f1-bdc6-4e4b-a84e-2d980e79df9a" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%201.png"><img style="width:702px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%201.png"/></a></figure><p id="c353e1a9-fd28-4391-b973-fba6df83a6fc" class="">
+</p><h1 id="76304fdb-50b5-4922-b87e-b0b4e6d17768" class="">Evaluation</h1><h2 id="ffe4b475-a87c-4b72-99b6-35f6a74d0aad" class="">Signal-to-noise ratio (SNR)</h2><p id="0b16dd40-7912-41e1-9a7e-700a4cae0d8e" class="">因為我們有混音前的標準答案，因此我們只要把我們現有的正確答案和mode吐出的答案進行比較即可</p><figure id="2749990f-113a-43df-95a4-4186be7eede0" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%202.png"><img style="width:537px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%202.png"/></a></figure><p id="40369feb-ba42-47fd-a193-836294b5c9da" class=""><strong>E(Error) </strong>代表的是誤差值</p><p id="3df15556-7a8b-4b00-b399-64d992f0b506" class="">
+</p><h2 id="4d6045c5-9761-455c-a308-be985603877e" class="">公式體現為⇒把聲音是做一條向量</h2><figure id="0746a40f-a3ce-4418-b080-9936acc23078" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%203.png"><img style="width:301px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%203.png"/></a></figure><h3 id="520cafa6-875e-488c-ad28-bfe817d20a38" class="">說明</h3><p id="5cfe96a2-4936-4bfb-8d67-ef2aafb7c960" class="">只要E越小SNR就越大</p><h2 id="3c6f8872-61e5-4a97-b19f-7941f29ade42" class="">SNR缺陷</h2><h3 id="b1d8f394-df94-454c-bcb2-53f890b453cf" class="">他們的E很大但是只要條大X(音量放大)就可以，因此評估不良</h3><div id="d53b5aa2-d342-4ba7-aedd-687c77e42ad9" class="column-list"><div id="92196c60-5458-49dc-8119-b059f1fead2a" style="width:50%" class="column"><figure id="c2a93703-2080-4d56-b220-15c88afbaa5d" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%204.png"><img style="width:162px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%204.png"/></a></figure></div><div id="f2bb3254-54b9-4c9b-94ab-544f6a3217f1" style="width:50%" class="column"><figure id="b194c0a2-2230-46ad-84f5-63b952730c08" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%205.png"><img style="width:178px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%205.png"/></a></figure></div></div><h3 id="242f8ff7-cf9f-47f3-a417-d6246b78da8b" class="">只要不斷調大聲音E就會變小</h3><figure id="d71e3daf-94ea-4ea9-9c64-8ddb9fbcd8a5" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%206.png"><img style="width:197px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%206.png"/></a></figure><p id="cec75588-4bc2-4fe9-ba57-d19b86c64f71" class="">
+</p><h2 id="bd0ee5c0-dd99-4f11-92db-95c14b98e099" class="">SI-SNR(SI-SDR)優化的版本</h2><figure id="47a53dd7-cb07-4110-83e1-a6033ddfd214" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%207.png"><img style="width:722px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%207.png"/></a></figure><p id="4bbc743d-3de4-4496-aad3-4a5a4cbe7e7e" class="">完美解決以上的兩個問題</p><h3 id="00443a65-e749-4797-b21a-51db4b8ffd61" class="">第一個問題</h3><figure id="4362532f-081a-4c0e-997d-3a75c183540d" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%208.png"><img style="width:336px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%208.png"/></a></figure><h3 id="e691bc61-efbf-48d0-98ca-44afd3667647" class="">第二題</h3><figure id="ee2b4bdd-10eb-40f9-8f3a-dda75e0065ca" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%209.png"><img style="width:335px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%209.png"/></a></figure><h2 id="cbbb2164-1d64-4538-aff3-04983a00eab8" class="">我們其實是看相比較原聲imprvoce多少SISDR</h2><figure id="f0dfb070-cf4b-4d25-ba91-12d997b69ff0" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2010.png"><img style="width:713px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2010.png"/></a></figure><p id="7a38e6c7-506b-4172-ba56-4ac50bbec3ae" class="">
+</p><h1 id="cd39db15-aafe-424e-b9f8-30aadf84426f" class="">Permutation issue</h1><p id="76afc302-6448-46bf-bc74-71259c36101c" class="">這個問題基本上就是，你不知道X1應該對應ground truth上的哪個音訊會比較好，所以我們在這裡要處理的問題是，讓X1去偏對應一抽象的概念，例如讓X1去對應男性的音訊，讓X2對應女性的音訊，或是讓X1對應能量比較大的音訊，然後在透過X1和ground truth 1 計算loss後反向傳播回去，但是在這裡的問題就是我們不知道怎樣的編排是最好的，可能是能量也有可能是男女，因此我們就需要解決此問題</p><figure id="ebd171dc-2893-435f-81e7-e4842e030f18" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2011.png"><img style="width:763px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2011.png"/></a></figure><h2 id="4f6ab595-0513-4346-bfd0-ea02165a47df" class="">Ideal Binary Mask(IBM)</h2><h3 id="3f646b2d-6a06-4010-bbe3-f89ec52799f0" class="">Masking</h3><p id="b9660d35-e1cb-441b-9493-f1910047c5ab" class="">這個解決方法比較像我們不在意他使用什麼概念進行分類的，能分成兩類即可，那具體的方法我們會去train一個叫Embedding generation的東西，讓他去決定這個masking(雖然是最後利用clustering確切的把masking搞出來)</p><p id="3b52e57c-9160-49cd-9475-70ecf9cb360f" class="">
+</p><h3 id="b657d085-c0a3-43c2-8bec-08a8375aec78" class="">一些關於IBM的重要名詞介紹或架構</h3><p id="1cbc55ae-a08a-4301-9b64-95a586e2fc6a" class=""><strong>裡面的speaker separation的東西</strong></p><p id="e28d367f-f916-463c-a786-65f004533647" class="">就是直接聲成兩個不同的矩陣然後處理即可</p><figure id="8af2430c-c406-41c9-8969-0074cfcc2a13" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2012.png"><img style="width:773px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2012.png"/></a></figure><p id="b64f1a70-7281-455f-b86b-e511e133d2b9" class="">
+</p><p id="3cbc38db-af43-47d3-a239-57f44b0e4107" class=""><strong>矩陣的 ground truth製作方法⇒看誰在那個地方的值比較大，取誰為1</strong></p><figure id="35874d20-14ab-455d-b4b0-a3da97951e8f" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2013.png"><img style="width:506px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2013.png"/></a></figure><h3 id="13a1fe47-409c-4362-98a4-4bd962ace3ed" class="">具體的訓練方法</h3><p id="66363da7-0779-4588-a2cc-dd6bea631bf9" class="">Embedding generation透過其中一個值得附近的值讓他長長度</p><figure id="15364c32-4d03-4b9d-a54e-a498a63adf83" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2014.png"><img style="width:780px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2014.png"/></a></figure><div id="84440da6-e83e-417c-8067-f64782283407" class="column-list"><div id="d164f0b2-c4df-4108-a7ae-70e3047d274b" style="width:50%" class="column"><figure id="c49f291e-1686-4f8b-a4a7-9f67aa8643c5" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2015.png"><img style="width:192px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2015.png"/></a></figure><p id="4ac20ee5-d1ef-4730-8957-4c80251469a4" class="">learn same </p><p id="0d690510-2f57-44f7-ad42-5337dca69053" class="">Embedding generation學習到這樣的一筆音訊進來，哪裡的值是相同的</p><p id="3bb61620-10e4-4f44-918a-2949930d6ecb" class="">
+</p></div><div id="0c0125d6-3a1a-4798-afc4-043eb125105c" style="width:50%" class="column"><figure id="67df139c-97ec-4186-9335-13308700a2d4" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2016.png"><img style="width:185px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2016.png"/></a></figure><p id="48ba796e-0a2b-4fd2-8715-b0b25e54f066" class="">learn difference</p><p id="27451cd0-4523-4285-b4e8-192d1953afdc" class="">Embedding generation學習到這樣的一筆音訊進來，哪裡的值是不同的</p></div></div><p id="1507fd9b-f075-4f05-aafb-f5cc6f4f1793" class="">所以就不需要指定X1、X2</p><h3 id="a59e5571-2406-4edc-a282-e8e635fbc777" class="">具體的推理方法(Deep Clustering)</h3><figure id="dfb02e21-bb27-4a2f-a654-79b6edf0aee9" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2017.png"><img style="width:808px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2017.png"/></a></figure><p id="f8c0383a-b2a2-47fd-be37-f88f72924897" class="">
+</p><p id="5908f9c5-6028-4b43-a381-ed6cba60175d" class="">用Embedding generation生成長度為A的向量，然後用K=2的k-means進行分類</p><h2 id="28b70869-c553-4f4d-8975-a0590ab0fad3" class="">Permtation Invariant Training(PIT)</h2><p id="792bc202-01cf-4472-b5fb-a7abdc40ff0c" class="">這個方法有點玄</p><p id="43db18ad-8dde-4cf0-94e4-b332159228d5" class="">簡單來講，我們先隨機設定一個初始參數，然後暴力的把X1對應L1，把X2對應L2，同事嘗試把X1對應L2，把X2對應L1，然後取loss那個小的進行反向傳播</p><figure id="5884c3cf-d346-45ac-8206-df65650e4647" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2018.png"><img style="width:498px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2018.png"/></a></figure><h3 id="05818dd6-9a1a-422d-8ed2-23ba4ad3d073" class="">神奇的是</h3><p id="7ce5ff2e-0cd5-4051-98f2-501fc07d7c64" class="">隨者Epoch變大，SDR也變大，然後每次PIT的變換百分比(例如原本X1→L1 and X2 →l2 變成X1→L2 and X2 →l1，就是一個變換，計算這次資料和上次資料的比較，來計算變換比例)，最後竟然神奇的收斂</p><figure id="f6542bcc-7829-4479-9263-33b902b7cbed" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2019.png"><img style="width:677px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2019.png"/></a></figure><p id="3db751c9-2b15-4c12-859b-b976a061982f" class="">
+</p><h3 id="3e540580-800f-4a63-8f68-4bf3383094b6" class="">更神奇的實驗結果</h3><figure id="1bf5a707-8f48-4f46-83c6-b9c1dbe536c1" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2020.png"><img style="width:792px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2020.png"/></a></figure><p id="690e5aab-2e89-4f03-b1ef-a88e750c4703" class="">(a) 用Energy為標準分配X1 X2 L1 L2</p><p id="e036e1e4-8b03-4a90-92bc-9c20942ab6df" class="">(b) 使用clustering方法分類</p><p id="8688ddad-37db-4b01-8e21-a6511c771909" class="">(c) 單純用PIT</p><p id="f0d1cf84-66bc-4600-996e-acf5bf2400f8" class="">(d) 使用( [c]的標籤指定結果)來重新train一個新network</p><p id="71e33751-89bd-496a-8a9a-15029db5f8f5" class="">(e) 對(d)的結果再次使用PIT</p><p id="71adbe44-a2c8-4077-bd53-ce0f99e0b8b7" class="">
+</p><h1 id="18457596-c1bf-4b5d-b6c9-4c48f7bf89ec" class="">TasNet</h1><h2 id="df693ac1-caac-4ada-a6fe-48c84bfb5519" class="">整體架構</h2><figure id="dd6b722b-136f-4f68-8417-8874865ff2ee" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2021.png"><img style="width:773px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2021.png"/></a></figure><h2 id="b8d4b9ef-2a4f-40bd-88eb-51f585b7f2f3" class="">Encoder</h2><p id="8db0d87d-b194-4c52-b683-b72cc6bcb9d6" class="">作用有點像FFT，但是是被learn出來的 ，把吃到的音訊變成spectrorm</p><figure id="4474229b-56ef-472f-81ae-a4fb5a1c09e2" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2022.png"><img style="width:316px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2022.png"/></a></figure><h2 id="52c510f0-a77b-4dd6-8b5d-4e2d66f26b3b" class="">Decoder</h2><p id="e534dabe-bfba-4821-907b-edfb77f0ee2e" class="">類似FT的逆作用，把spectrom變回音訊</p><figure id="7b77056d-fe4b-4be0-9f19-24efe77fe0fa" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2023.png"><img style="width:231px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2023.png"/></a></figure><h2 id="a9315135-9cc9-43ca-8e31-29346a9f1c1f" class="">Separator的內部架構⇒Tasnet</h2><figure id="b25e469c-975f-4470-a3eb-a3b7d02301b9" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2024.png"><img style="width:506px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2024.png"/></a></figure><p id="7e7a69b9-f5a2-4949-be90-f0fe0c127550" class="">每到下一層我們都多跳一步吸收該vector，然後這個vector就可以看到很多的資訊，每一個vector大約代表1-2ms</p><h2 id="64b7e26d-08b9-494f-ad6d-1f153e36b4da" class="">實際運作架構</h2><h3 id="1bbcdc39-e6f8-4716-836d-357f4ff78e0f" class="">一個repeat</h3><figure id="c7acd4a9-b7c3-42c9-accf-9ed88173f6e6" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2025.png"><img style="width:657px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2025.png"/></a></figure><h3 id="d3d4cce5-ad22-423f-b0e8-39ae14e9a979" class="">多個repeat才產生mask</h3><figure id="87bcd067-5d1b-497f-92ce-505c29d31896" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2026.png"><img style="width:568px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2026.png"/></a></figure><p id="d61ee75d-3a63-4e83-a535-35c02319526f" class="">越多層，model可以考慮長度是1.53秒的聲音訊號長度 </p><p id="a246f36b-4f55-47b0-946a-97c3fa19376e" class="">
+</p><h2 id="d7b57784-080b-4b79-943e-bef9f1ff68fb" class="">LSTM-TasNet VS Conv-TasNet</h2><figure id="b48d6169-a793-4e7d-b24e-4eb967bffb50" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2027.png"><img style="width:747px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2027.png"/></a></figure><p id="26a284f6-717a-4ba7-9447-f94afd560ba0" class="">Lstm習慣讀入一個句子的起始，因此如果你丟給Lstm的開頭不是一個句子的起始的話，而是丟給他音訊的中點作為Lstm的開頭，就會導致她出問題，而很不穩定</p><h2 id="2d7fdaa8-2baf-4a38-8e25-149eeb20c1d0" class="">更好懂得整體架構</h2><figure id="7d0e666e-61e7-473c-b107-f207470baa45" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2028.png"><img style="width:796px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2028.png"/></a></figure><h2 id="f48b3191-f2e6-4f05-a0b6-b05dabc59827" class="">Generalize的問題</h2><h3 id="772d1fad-8c62-4998-a93a-b91d4af94895" class="">Deep-clustering VS TasNet</h3><figure id="ee64f8fc-de00-4383-b01e-b866bdb174ab" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2029.png"><img style="width:288px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2029.png"/></a></figure><p id="929c49c1-4143-4213-b26e-357c02afaa56" class="">明顯TasNet比較好</p><figure id="51344e34-204f-46ea-bea8-52aff24c8bda" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2030.png"><img style="width:618px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2030.png"/></a></figure><p id="9278802b-54b0-46e2-8b28-bc52c3940a1c" class="">但實際上在中文的泛化能力上是Deep-clustering更佳</p><h1 id="9a98fddb-b052-4087-af1c-f21855a64d2c" class="">Unknown number of speaker</h1><p id="490e5799-cd06-4aa9-97d6-7528b2f7f982" class="">解法變成，不管輸入的聲音訊號是幾個人混合，我們都是把其中一個人的聲音訊號抽離出來</p><figure id="1279c5bb-b512-4d69-81ee-fa9c4d0b62a8" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2031.png"><img style="width:775px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2031.png"/></a></figure><p id="b2b46540-6972-4067-8264-55268e575ecc" class="">
+</p><h1 id="a83a54eb-c4bc-492d-80ed-a64b269b8d4a" class="">Mutiple Microphones</h1><p id="4a7b2c65-a945-482c-bd38-581885da0713" class="">如何活用多個麥克風訊號</p><p id="e9c7044f-65fd-4a01-9378-7d6250764cb3" class="">
+</p><h1 id="e8d2d6cc-d5fe-4c92-9b50-2fe10f70a363" class="">visual information</h1><p id="1305fb0a-57fa-4d53-9cf0-a48c2dd880d3" class="">可以透過影像的資訊加強語音分離的能力</p><figure id="74f6781b-b213-45d5-811a-3dfde3d8610d" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2032.png"><img style="width:790px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2032.png"/></a></figure><p id="ff13a998-ae53-48b8-803d-55a92fdbe271" class="">
+</p><h1 id="e0f59ff8-1018-47b4-a5c7-1b059b427f6d" class="">Task-oriented Optimization</h1><p id="e46b42e7-7928-4b01-b05a-bc8703af9356" class="">根據任務決定自己想要提高的指標</p><figure id="ca97c28f-b91f-4ab5-86a9-352fe0801ffd" class="image"><a href="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2033.png"><img style="width:727px" src="Speech%20Separation%20c0c67c781b954a66834de0a869f9620d/Untitled%2033.png"/></a></figure></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><a href="/index.html">返回首页</a> | <a href="/articles.html">返回文章列表</a></body></html>
